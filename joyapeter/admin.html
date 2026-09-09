@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Privado | Administración</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .login-box {
+      max-width: 400px;
+      margin: 80px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      border: 2px solid #D4AF37;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+    .admin-container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+    .form-box {
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      border: 1px solid #D4AF37;
+      margin-bottom: 30px;
+    }
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    .form-row .col {
+      flex: 1;
+    }
+    .tabla-productos {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .tabla-productos th, .tabla-productos td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+      font-size: 0.85rem;
+    }
+    .tabla-productos th {
+      background: #111;
+      color: #D4AF37;
+    }
+    .btn-editar {
+      background: #D4AF37;
+      color: #000;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 5px;
+    }
+    .btn-eliminar {
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .input-group {
+      display: flex;
+      align-items: center;
+    }
+    .input-prefix {
+      background: #eee;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-right: none;
+      border-radius: 4px 0 0 4px;
+      margin-top: -10px;
+      font-weight: bold;
+      color: #555;
+    }
+    .input-group input {
+      border-radius: 0 4px 4px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ACCESO -->
+  <div id="vista-login" class="login-box">
+    <h2 style="color:#111; margin-bottom:15px; font-size:1.2rem;">ACCESO ADMINISTRADOR</h2>
+    <input type="password" id="clave-input" class="input-field" placeholder="Ingresa tu contraseña">
+    <button onclick="verificarClave()" class="btn-ws">Ingresar al Panel</button>
+  </div>
+
+  <!-- PANEL DE CONTROL -->
+  <div id="vista-panel" class="admin-container" style="display:none;">
+    <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h2>PANEL DE GESTIÓN DE JOYAS</h2>
+      <button onclick="cerrarSesion()" style="background:#ff4d4d; color:#fff; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">Cerrar Sesión</button>
+    </header>
+
+    <div class="form-box">
+      <h3 id="form-titulo" style="margin-bottom:15px; color:#111;">+ Subir Nueva Joya</h3>
+      <form id="form-admin" onsubmit="guardarJoya(event)">
+        <input type="hidden" id="edit-index" value="-1">
+
+        <div class="form-row">
+          <div class="col">
+            <label>Nombre del Producto:</label>
+            <input type="text" id="nombre" class="input-field" required placeholder="Ej. Anillo Solitario">
+          </div>
+          <div class="col">
+            <label>Categoría:</label>
+            <select id="categoria" class="input-field" required>
+              <option value="anillos">Anillos</option>
+              <option value="cadenas">Cadenas</option>
+              <option value="aretes">Aretes</option>
+              <option value="pulseras">Pulseras</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="col">
+            <label>Material:</label>
+            <input type="text" id="material" class="input-field" required placeholder="Ej. Plata Ley 925">
+          </div>
+          <div class="col">
+            <label>Precio por Kg (CLP):</label>
+            <div class="input-group">
+              <span class="input-prefix">$</span>
+              <input type="text" id="precioKg" class="input-field" required placeholder="Ej. 120.000">
+            </div>
+          </div>
+          <div class="col">
+            <label>¿Hay Stock Disponible?</label>
+            <select id="stock" class="input-field" required>
+              <option value="Disponible">Sí (Disponible)</option>
+              <option value="Agotado">No (Agotado)</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Descripción Corta:</label>
+        <textarea id="descripcion" class="input-field" style="height:50px;" required></textarea>
+
+        <label id="label-foto">Foto desde Galería (Obligatoria para joyas nuevas):</label>
+        <input type="file" id="imagen-file" accept="image/*" class="input-field">
+
+        <div style="display:flex; gap:10px;">
+          <button type="submit" id="btn-guardar" class="btn-ws" style="flex:2;">+ Cargar y Guardar Joya</button>
+          <button type="button" id="btn-cancelar" onclick="cancelarEdicion()" class="btn-ws" style="background:#888; display:none; flex:1;">Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <h3>Inventario en Catálogo</h3>
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>Foto</th>
+          <th>Nombre</th>
+          <th>Precio/Kg</th>
+          <th>Stock</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="lista-tabla">
+        <!-- Se llena dinámicamente -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const CLAVE_CORRECTA = "1234";
+    let productos = JSON.parse(localStorage.getItem("mis_joyas_catalogo")) || [];
+
+    function verificarClave() {
+      const pass = document.getElementById("clave-input").value;
+      if (pass === CLAVE_CORRECTA) {
+        document.getElementById("vista-login").style.display = "none";
+        document.getElementById("vista-panel").style.display = "block";
+        cargarTabla();
+      } else {
+        alert("Contraseña incorrecta");
+      }
+    }
+
+    function cerrarSesion() {
+      document.getElementById("vista-login").style.display = "block";
+      document.getElementById("vista-panel").style.display = "none";
+      document.getElementById("clave-input").value = "";
+    }
+
+    function cargarTabla() {
+      const tbody = document.getElementById("lista-tabla");
+      tbody.innerHTML = "";
+      productos.forEach((p, index) => {
+        // Formatear precio
+        let precioTxt = p.precioKg ? p.precioKg : '-';
+        if(precioTxt !== '-' && !precioTxt.includes('$')) {
+          precioTxt = '$' + precioTxt + ' / Kg';
+        }
+
+        tbody.innerHTML += `
+          <tr>
+            <td><img src="${p.imagen}" width="40" height="40" style="object-fit:cover; border-radius:4px;"></td>
+            <td><b>${p.nombre}</b><br><small>${p.material}</small></td>
+            <td>${precioTxt}</td>
+            <td><b style="color:${p.stock === 'Agotado' ? '#c62828' : '#2e7d32'}">${p.stock || 'Disponible'}</b></td>
+            <td>
+              <button onclick="editarJoya(${index})" class="btn-editar">Editar</button>
+              <button onclick="borrarJoya(${index})" class="btn-eliminar">Eliminar</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function editarJoya(index) {
+      const p = productos[index];
+      document.getElementById("edit-index").value = index;
+      document.getElementById("nombre").value = p.nombre;
+      document.getElementById("categoria").value = p.categoria;
+      document.getElementById("material").value = p.material;
+      
+      // Limpiar prefijo $ y sufijo / Kg si ya venía guardado
+      let precioLimpio = p.precioKg ? p.precioKg.replace('$', '').replace('/ Kg', '').trim() : '';
+      document.getElementById("precioKg").value = precioLimpio;
+
+      document.getElementById("stock").value = p.stock || "Disponible";
+      document.getElementById("descripcion").value = p.descripcion;
+      
+      document.getElementById("form-titulo").innerText = "✏️ Editando Joya: " + p.nombre;
+      document.getElementById("btn-guardar").innerText = "Guardar Cambios";
+      document.getElementById("btn-cancelar").style.display = "block";
+      document.getElementById("label-foto").innerText = "Cambiar Foto (Opcional, deja vacío para conservar la actual):";
+      
+      // Desplazar pantalla al formulario
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelarEdicion() {
+      document.getElementById("edit-index").value = "-1";
+      document.getElementById("form-admin").reset();
+      document.getElementById("form-titulo").innerText = "+ Subir Nueva Joya";
+      document.getElementById("btn-guardar").innerText = "+ Cargar y Guardar Joya";
+      document.getElementById("btn-cancelar").style.display = "none";
+      document.getElementById("label-foto").innerText = "Foto desde Galería (Obligatoria para joyas nuevas):";
+    }
+
+    function convertirImagenABase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    async function guardarJoya(e) {
+      e.preventDefault();
+      const editIndex = parseInt(document.getElementById("edit-index").value);
+      const fileInput = document.getElementById("imagen-file");
+      const file = fileInput.files[0];
+      const btn = document.getElementById("btn-guardar");
+
+      if (editIndex === -1 && !file) {
+        alert("Por favor selecciona una foto para registrar el nuevo producto.");
+        return;
+      }
+
+      btn.innerText = "Procesando...";
+      btn.disabled = true;
+
+      try {
+        let urlImagen = editIndex !== -1 ? productos[editIndex].imagen : "";
+        if (file) {
+          urlImagen = await convertirImagenABase64(file);
+        }
+
+        let precioFormateado = document.getElementById("precioKg").value.trim();
+
+        const joyaData = {
+          id: editIndex !== -1 ? productos[editIndex].id : ("JOY-" + String(productos.length + 1).padStart(3, '0')),
+          nombre: document.getElementById("nombre").value,
+          categoria: document.getElementById("categoria").value,
+          material: document.getElementById("material").value,
+          precioKg: precioFormateado,
+          stock: document.getElementById("stock").value,
+          descripcion: document.getElementById("descripcion").value,
+          imagen: urlImagen
+        };
+
+        if (editIndex !== -1) {
+          productos[editIndex] = joyaData;
+          alert("¡Joya actualizada correctamente!");
+        } else {
+          productos.push(joyaData);
+          alert("¡Joya guardada con éxito!");
+        }
+
+        localStorage.setItem("mis_joyas_catalogo", JSON.stringify(productos));
+        cancelarEdicion();
+        cargarTabla();
+      } catch (error) {
+        console.error("Error procesando imagen:", error);
+        alert("Ocurrió un error al procesar los datos.");
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function borrarJoya(index) {
+      if (confirm("¿Seguro que deseas eliminar esta joya de tu catálogo?")) {
+        productos.splice(index, 1);
+        localStorage.setItem("mis_joyas_catalogo", JSON.stringify(productos));
+        cargarTabla();
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,545 @@
+
+/* =================================================================
+   ESTILOS GENERALES Y FUENTES
+   ================================================================= */
+/* Desplazamiento suave al hacer clic en la flecha */
+html {
+  scroll-behavior: smooth;
+}
+
+/* =================================================================
+   NUEVA SECCIÓN: PORTADA A PANTALLA COMPLETA
+   ================================================================= */
+.hero-section {
+  height: 100vh; /* Ocupa el 100% de la pantalla */
+  width: 100%;
+  /* Fondo oscuro con una imagen de joyería de fondo (cámbiala si gustas) */
+  background: linear-gradient(to bottom, rgba(7, 7, 7, 0.85), rgba(7, 7, 7, 0.95)), 
+              url('https://images.unsplash.com/photo-1573408301145-b98c4654446c?w=1200&auto=format&fit=crop') center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+  padding: 20px;
+}
+
+.hero-content {
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-logo {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 2px solid #D4AF37;
+  margin-bottom: 25px;
+  object-fit: cover;
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+}
+
+.hero-title {
+  font-size: 2.8rem;
+  color: #D4AF37;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-text {
+  color: #d4d4d4;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+/* Flecha animada de salto */
+.scroll-indicador {
+  position: absolute;
+  bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #D4AF37;
+  animation: flotar 2s infinite ease-in-out;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.scroll-indicador:hover {
+  transform: scale(1.1);
+}
+
+.texto-scroll {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.flecha-abajo {
+  width: 35px;
+  height: 35px;
+  fill: #D4AF37;
+}
+
+@keyframes flotar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(12px); }
+}
+
+/* Espacio superior para el catálogo real */
+.catalogo-wrapper {
+  padding-top: 40px;
+  min-height: 100vh;
+}
+   * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
+body {
+  /* Fondo dividido: 45% negro profundo arriba, 55% humo elegante abajo */
+  background: linear-gradient(to bottom, #070707 0%, #0d0d0d 45%, #e8e8e8 45%, #dcdcdc 100%);
+  background-attachment: fixed;
+  color: #111;
+  min-height: 100vh;
+  padding-bottom: 50px;
+}
+
+/* =================================================================
+   PARTE SUPERIOR: ENCABEZADO CON DEGRADE DORADO RADIANTE
+   ================================================================= */
+.header {
+  text-align: center;
+  padding: 45px 20px 20px 20px;
+  background: transparent;
+}
+
+.header h1 {
+  font-size: 2.3rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+.header p {
+  color: #cccccc;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  font-weight: 500;
+}
+
+/* Buscador y Categorías */
+.filtros-container {
+  max-width: 900px;
+  margin: 0 auto 40px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+#buscador {
+  width: 100%;
+  max-width: 500px;
+  padding: 12px 20px;
+  background: #141414;
+  border: 1px solid #D4AF37;
+  border-radius: 25px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+  transition: all 0.3s ease;
+}
+
+#buscador:focus {
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
+  border-color: #FFF2A3;
+}
+
+.categorias {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.btn-filtro {
+  background: transparent;
+  color: #d4d4d4;
+  border: 1px solid #444;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-filtro:hover, .btn-filtro.activo {
+  background: linear-gradient(135deg, #BF953F 0%, #B38728 100%);
+  color: #000;
+  border-color: #FCF6BA;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+}
+
+/* =================================================================
+   PARTE INFERIOR: REJILLA CON EFECTOS DE RAYOS Y BRILLO DE SOL
+   ================================================================= */
+.grid-productos {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 25px;
+}
+
+/* Tarjeta del Producto */
+.card {
+  background: #f4f4f5; /* Tono humo ultra claro para destacar sutilmente */
+  border-radius: 12px;
+  border: 1px solid #d1d1d1; /* Borde un poco más gris */
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 🌟 EFECTO 1: Destello / Rayos de luz sobre la imagen */
+.card-img-wrapper {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: #111;
+}
+
+.card-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+/* Haz de luz de rayo solar cruzado */
+.card-img-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -150%;
+  left: -150%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(
+    45deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.1) 40%, 
+    rgba(255, 243, 176, 0.8) 50%, 
+    rgba(255, 255, 255, 0.1) 60%, 
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(25deg);
+  pointer-events: none;
+  z-index: 2;
+  animation: destelloSolar 4s infinite ease-in-out;
+}
+
+/* 🌟 EFECTO 2: Resplandor de rayos solares en la esquina superior */
+.card-img-wrapper::after {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(255, 242, 163, 0.9) 0%, rgba(212, 175, 55, 0.4) 40%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: screen;
+  animation: latidoSol 2.5s infinite alternate ease-in-out;
+}
+
+/* Animación de ráfaga de luz */
+@keyframes destelloSolar {
+  0% {
+    transform: translateY(-100%) translateX(-100%) rotate(25deg);
+  }
+  20%, 100% {
+    transform: translateY(100%) translateX(100%) rotate(25deg);
+  }
+}
+
+/* Animación de pulso solar radiante */
+@keyframes latidoSol {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 1;
+  }
+}
+
+/* Reacción al pasar el mouse */
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: #D4AF37;
+  box-shadow: 0 15px 35px rgba(212, 175, 55, 0.4), 0 0 15px rgba(255, 230, 120, 0.3);
+}
+
+.card:hover .card-img-wrapper img {
+  transform: scale(1.08);
+}
+
+.card:hover .card-img-wrapper::before {
+  animation: destelloRapido 0.8s ease-in-out;
+}
+
+@keyframes destelloRapido {
+  0% { transform: translateY(-100%) translateX(-100%) rotate(25deg); }
+  100% { transform: translateY(100%) translateX(100%) rotate(25deg); }
+}
+
+/* Detalles de Info */
+.card-info {
+  padding: 15px;
+  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-info h3 {
+  font-size: 1rem;
+  color: #111;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.card-info .material {
+  font-size: 0.78rem;
+  color: #B38728;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Precio / Stock */
+.detalles-comerciales {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 6px 0;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.precio-kg {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.badge-stock {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.stock-disponible {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.stock-agotado {
+  background: #ffebee;
+  color: #c62828;
+}
+
+/* Botón Ver Detalle */
+.btn-ver {
+  background: #0a0a0a;
+  color: #D4AF37;
+  border: 1px solid #D4AF37;
+  padding: 10px;
+  width: 100%;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
+}
+
+.btn-ver:hover {
+  background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 50%, #B38728 100%);
+  color: #000;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+}
+
+/* =================================================================
+   MODAL CON RESPLANDOR CENTRAL
+   ================================================================= */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal-contenido {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 650px;
+  width: 100%;
+  position: relative;
+  border: 2px solid #D4AF37;
+  overflow: hidden;
+  box-shadow: 0 0 35px rgba(212, 175, 55, 0.5);
+}
+
+.cerrar {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #111;
+  z-index: 10;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: row;
+}
+
+@media(max-width: 600px) {
+  .modal-body {
+    flex-direction: column;
+  }
+}
+
+.modal-imagen {
+  flex: 1;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-imagen img {
+  width: 100%;
+  height: 100%;
+  min-height: 250px;
+  object-fit: cover;
+  display: block;
+}
+
+.modal-info {
+  flex: 1;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.badge {
+  background: #0a0a0a;
+  color: #D4AF37;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  width: fit-content;
+  margin-bottom: 10px;
+}
+
+.modal-info h2 {
+  font-size: 1.3rem;
+  color: #111;
+  margin-bottom: 5px;
+}
+
+.material-text {
+  color: #B38728;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+#modal-descripcion {
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+
+.btn-ws {
+  background: #25D366;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.3s ease;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.btn-ws:hover {
+  background: #1eb954;
+}
+
+.btn-ws svg {
+  fill: #fff;
+}
+.header h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  /* Efecto de texto dorado metálico */
+  background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+  text-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+}
