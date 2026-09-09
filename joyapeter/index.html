@@ -1,74 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Importadora de Joyas | Catálogo</title>
-  
-  <!-- ESTO ES LO QUE CONECTA EL DISEÑO -->
-  <link rel="stylesheet" href="styles.css">
-  
-  <!-- Fuente tipográfica -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joya Peter | Catálogo Exclusivo</title>
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Fuentes Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- SDK de Firebase (Compatibilidad) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  
-  <!-- PORTADA A PANTALLA COMPLETA (HERO SECTION) -->
-  <section class="hero-section">
-    <div class="hero-content">
-      <img src="https://via.placeholder.com/150x150/111/D4AF37?text=TU+LOGO" alt="Logo Importadora" class="hero-logo">
-      <h1 class="hero-title">Importadora de Joyas</h1>
-      <p class="hero-text">Somos importadores directos de joyería de la más alta calidad. Descubre piezas únicas, elegantes y con el mejor margen para tu negocio. Conócenos y deslúmbrate con nuestra colección.</p>
-      
-      <a href="#catalogo-seccion" class="scroll-indicador">
-        <span class="texto-scroll">Ver Catálogo</span>
-        <svg class="flecha-abajo" viewBox="0 0 24 24">
-          <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
-        </svg>
-      </a>
-    </div>
-  </section>
 
-  <!-- SECCIÓN DEL CATÁLOGO -->
-  <section id="catalogo-seccion" class="catalogo-wrapper">
-    <header class="header">
-      <h2>NUESTRA COLECCIÓN</h2>
-      <p>CALIDAD DE IMPORTACIÓN — VENTAS DIRECTAS</p>
+    <!-- Encabezado / Logo -->
+    <header class="header-principal">
+        <div class="logo-container">
+            <h1 class="logo-texto">JOYA PETER</h1>
+            <p class="slogan">Importaciones & Joyería Fina</p>
+        </div>
     </header>
 
-    <section class="filtros-container">
-      <input type="text" id="buscador" placeholder="Buscar joya (ej. Anillo, Plata...)" onkeyup="filtrarProductos()">
-      <div class="categorias" id="categorias-btn">
-        <button class="btn-filtro activo" onclick="filtrarCategoria('todos', this)">Todos</button>
-        <button class="btn-filtro" onclick="filtrarCategoria('anillos', this)">Anillos</button>
-        <button class="btn-filtro" onclick="filtrarCategoria('cadenas', this)">Cadenas</button>
-        <button class="btn-filtro" onclick="filtrarCategoria('aretes', this)">Aretes</button>
-        <button class="btn-filtro" onclick="filtrarCategoria('pulseras', this)">Pulseras</button>
-      </div>
+    <!-- Banner de Bienvenida -->
+    <section class="hero-banner">
+        <h2>Colección Exclusiva</h2>
+        <p>Explora nuestro catálogo en tiempo real y consulta directamente por WhatsApp.</p>
     </section>
 
-    <main class="grid-productos" id="grid-productos"></main>
-  </section>
-
-  <!-- MODAL DE DETALLE -->
-  <div id="modal" class="modal">
-    <div class="modal-contenido">
-      <span class="cerrar" onclick="cerrarModal()">&times;</span>
-      <div class="modal-body">
-        <div class="modal-imagen">
-          <img id="modal-img" src="" alt="Joya">
+    <!-- Contenedor del Catálogo -->
+    <main class="contenedor-main">
+        <div id="contenedor-productos" class="grid-productos">
+            <p class="cargando">Cargando catálogo exclusivo...</p>
         </div>
-        <div class="modal-info">
-          <span id="modal-codigo" class="badge"></span>
-          <h2 id="modal-titulo"></h2>
-          <p id="modal-material" class="material-text"></p>
-          <div id="modal-descripcion"></div>
-          <button id="btn-whatsapp" class="btn-ws">Pedir por WhatsApp</button>
-        </div>
-      </div>
-    </div>
-  </div>
+    </main>
 
-  <script src="script.js"></script>
+    <!-- Pie de página -->
+    <footer class="footer-principal">
+        <p>&copy; 2026 Joya Peter. Todos los derechos reservados.</p>
+        <a href="admin.html" class="link-admin-oculto">Acceso Administración</a>
+    </footer>
+
+    <!-- Lógica JavaScript -->
+    <script src="script.js"></script>
 </body>
 </html>
