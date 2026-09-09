@@ -1,116 +1,146 @@
-const TELEFONO_WHATSAPP = "56944001454"; // Tu teléfono con código de país
-let productos = [];
-let categoriaActual = "todos";
+// Configuración de conexión a tu Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyBjLT-8QHzVNqNX8Cn5ee0MdIkq2IXqUfs",
+  authDomain: "catalogo-joyapeter.firebaseapp.com",
+  projectId: "catalogo-joyapeter",
+  storageBucket: "catalogo-joyapeter.firebasestorage.app",
+  messagingSenderId: "1061050802779",
+  appId: "1:1061050802779:web:50581dfb2238df8305157e"
+};
 
-document.addEventListener("DOMContentLoaded", () => {
-  const guardados = localStorage.getItem("mis_joyas_catalogo");
-  if (guardados) {
-    productos = JSON.parse(guardados);
-  } else {
-    productos = [];
+// Inicializar Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+const productosRef = db.collection('productos');
+
+// Referencias a elementos del HTML
+const contenedorProductos = document.getElementById('contenedor-productos');
+const formProducto = document.getElementById('form-producto');
+const listaAdminProductos = document.getElementById('lista-admin-productos');
+
+// Sincronización en tiempo real con Firestore
+productosRef.onSnapshot((snapshot) => {
+  const productos = [];
+  snapshot.forEach((doc) => {
+    productos.push({ id: doc.id, ...doc.data() });
+  });
+
+  // Si estamos en la página principal (index.html)
+  if (contenedorProductos) {
+    renderizarCatalogo(productos);
   }
-  renderizarProductos(productos);
+
+  // Si estamos en la página de administración (admin.html)
+  if (listaAdminProductos) {
+    renderizarListaAdmin(productos);
+  }
+}, (error) => {
+  console.error("Error al conectar con Firestore:", error);
 });
 
-// Función para asegurar formato $ XXX.XXX / Kg
-function formatearPrecioCLP(precio) {
-  if (!precio) return "Consultar precio";
-  let limpio = precio.toString().replace('$', '').replace('/ Kg', '').trim();
-  return `$${limpio} / Kg`;
-}
+// Función para mostrar el catálogo público (index.html)
+function renderizarCatalogo(productos) {
+  contenedorProductos.innerHTML = '';
 
-function renderizarProductos(lista) {
-  const contenedor = document.getElementById("grid-productos");
-  contenedor.innerHTML = "";
-
-  if (lista.length === 0) {
-    contenedor.innerHTML = "<p style='grid-column: 1/-1; text-align:center; padding: 20px;'>No hay joyas registradas en el catálogo.</p>";
+  if (productos.length === 0) {
+    contenedorProductos.innerHTML = `<p class="mensaje-vacio">No hay joyas disponibles en el catálogo.</p>`;
     return;
   }
 
-  lista.forEach(item => {
-    const card = document.createElement("div");
-    card.className = "card";
+  productos.forEach((prod) => {
+    const tarjeta = document.createElement('div');
+    tarjeta.className = 'tarjeta-producto';
 
-    const esAgotado = item.stock === "Agotado";
-    const claseStock = esAgotado ? "stock-agotado" : "stock-disponible";
-    const textoStock = esAgotado ? "Agotado" : "En Stock";
+    const precioFormateado = new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP'
+    }).format(prod.precio || 0);
 
-    card.innerHTML = `
-  <div class="card-img-wrapper">
-    <img src="${item.imagen}" alt="${item.nombre}">
-  </div>
-  <div class="card-info">
-    <h3>${item.nombre}</h3>
-    <p class="material">${item.material}</p>
-    
-    <div class="detalles-comerciales">
-      <p class="precio-kg">${formatearPrecioCLP(item.precioKg)}</p>
-      <span class="badge-stock ${claseStock}">${textoStock}</span>
-    </div>
+    const mensajeWa = encodeURIComponent(`Hola, estoy interesado en la joya: ${prod.nombre} (${precioFormateado})`);
+    const urlWa = `https://wa.me/?text=${mensajeWa}`;
 
-    <button class="btn-ver" onclick="abrirModal('${item.id}')">Ver Detalle</button>
-  </div>
-`;
-    contenedor.appendChild(card);
+    tarjeta.innerHTML = `
+      <div class="imagen-container">
+        <img src="${prod.imagen || 'https://via.placeholder.com/300'}" alt="${prod.nombre}">
+      </div>
+      <div class="info-producto">
+        <h3>${prod.nombre}</h3>
+        <p class="descripcion">${prod.descripcion || ''}</p>
+        <p class="precio">${precioFormateado}</p>
+        <a href="${urlWa}" target="_blank" rel="noopener" class="btn-whatsapp">Consultar por WhatsApp</a>
+      </div>
+    `;
+    contenedorProductos.appendChild(tarjeta);
   });
 }
 
-function abrirModal(id) {
-  const joya = productos.find(p => p.id === id);
-  if (!joya) return;
+// Función para mostrar la lista en el panel de administración (admin.html)
+function renderizarListaAdmin(productos) {
+  listaAdminProductos.innerHTML = '';
 
-  const esAgotado = joya.stock === "Agotado";
-  const textoPrecio = formatearPrecioCLP(joya.precioKg);
+  if (productos.length === 0) {
+    listaAdminProductos.innerHTML = `<p>No hay productos registrados en la base de datos.</p>`;
+    return;
+  }
 
-  document.getElementById("modal-img").src = joya.imagen;
-  document.getElementById("modal-codigo").innerText = "CÓDIGO: " + joya.id;
-  document.getElementById("modal-titulo").innerText = joya.nombre;
-  document.getElementById("modal-material").innerText = joya.material;
-  
-  document.getElementById("modal-descripcion").innerHTML = `
-    <p style="margin-bottom: 8px;"><b>Precio/Kg:</b> ${textoPrecio}</p>
-    <p style="margin-bottom: 12px;"><b>Disponibilidad:</b> <span style="color:${esAgotado ? '#c62828' : '#2e7d32'}; font-weight:bold;">${esAgotado ? 'Agotado' : 'Disponible'}</span></p>
-    <p style="color: #666; font-size: 0.85rem;">${joya.descripcion}</p>
-  `;
-
-  const mensaje = `Hola! Me interesa cotizar este producto de tu catálogo:\n\n` +
-                  `*Producto:* ${joya.nombre}\n` +
-                  `*Código:* ${joya.id}\n` +
-                  `*Material:* ${joya.material}\n` +
-                  `*Precio/Kg:* ${textoPrecio}\n` +
-                  `*Estado:* ${esAgotado ? 'Agotado' : 'Disponible'}`;
-
-  const linkWhatsapp = `https://api.whatsapp.com/send?phone=${TELEFONO_WHATSAPP}&text=${encodeURIComponent(mensaje)}`;
-  document.getElementById("btn-whatsapp").onclick = () => window.open(linkWhatsapp, "_blank");
-
-  document.getElementById("modal").style.display = "flex";
-}
-
-function cerrarModal() {
-  document.getElementById("modal").style.display = "none";
-}
-
-window.onclick = function(event) {
-  const modal = document.getElementById("modal");
-  if (event.target === modal) cerrarModal();
-}
-
-function filtrarCategoria(cat, elemento) {
-  categoriaActual = cat;
-  document.querySelectorAll(".btn-filtro").forEach(b => b.classList.remove("activo"));
-  elemento.classList.add("activo");
-  filtrarProductos();
-}
-
-function filtrarProductos() {
-  const textoBusqueda = document.getElementById("buscador").value.toLowerCase();
-  const resultados = productos.filter(joya => {
-    const coincideCategoria = (categoriaActual === "todos") || (joya.categoria === categoriaActual);
-    const coincideTexto = joya.nombre.toLowerCase().includes(textoBusqueda) || 
-                           joya.material.toLowerCase().includes(textoBusqueda) ||
-                           joya.id.toLowerCase().includes(textoBusqueda);
-    return coincideCategoria && coincideTexto;
+  productos.forEach((prod) => {
+    const item = document.createElement('div');
+    item.className = 'item-admin';
+    item.innerHTML = `
+      <div class="info-admin">
+        <img src="${prod.imagen || 'https://via.placeholder.com/50'}" alt="${prod.nombre}" width="50" height="50">
+        <div>
+          <strong>${prod.nombre}</strong> - $${prod.precio}
+          <p>${prod.categoria || 'Joyas'}</p>
+        </div>
+      </div>
+      <button onclick="eliminarProducto('${prod.id}')" class="btn-eliminar">Eliminar</button>
+    `;
+    listaAdminProductos.appendChild(item);
   });
-  renderizarProductos(resultados);
 }
+
+// Evento para agregar un nuevo producto desde el formulario (admin.html)
+if (formProducto) {
+  formProducto.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nombre = document.getElementById('nombre').value;
+    const precio = Number(document.getElementById('precio').value);
+    const descripcion = document.getElementById('descripcion').value;
+    const imagen = document.getElementById('imagen').value;
+    const categoria = document.getElementById('categoria') ? document.getElementById('categoria').value : 'Anillos';
+
+    try {
+      await productosRef.add({
+        nombre,
+        precio,
+        descripcion,
+        imagen,
+        categoria,
+        creado: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      formProducto.reset();
+      alert('¡Joya guardada exitosamente en la nube!');
+    } catch (error) {
+      console.error("Error al guardar el producto:", error);
+      alert('Hubo un error al intentar guardar el producto.');
+    }
+  });
+}
+
+// Función global para eliminar joyas directamente de Firestore
+window.eliminarProducto = async function(id) {
+  if (confirm('¿Estás seguro de que deseas eliminar esta joya del catálogo?')) {
+    try {
+      await productosRef.doc(id).delete();
+      alert('Joya eliminada correctamente.');
+    } catch (error) {
+      console.error("Error al eliminar el producto:", error);
+      alert('Hubo un error al intentar eliminar la joya.');
+    }
+  }
+};
